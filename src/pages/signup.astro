@@ -1,0 +1,57 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+---
+
+<Layout title="Sign Up">
+	<div class="container mx-auto px-4 py-16 flex items-center justify-center min-h-[80vh]">
+		<div class="w-full max-w-lg bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-xl">
+			<div class="text-center mb-8">
+				<h1 class="text-3xl font-bold text-white mb-2">Create an Account</h1>
+				<p class="text-zinc-400 text-sm">Join Greek Nation to submit offers and connect</p>
+			</div>
+
+			<form class="space-y-4">
+				<div class="grid grid-cols-2 gap-4">
+					<div>
+						<label class="block text-sm font-medium text-zinc-300 mb-1">First Name</label>
+						<Input type="text" placeholder="John" className="bg-zinc-950 border-zinc-800" />
+					</div>
+					<div>
+						<label class="block text-sm font-medium text-zinc-300 mb-1">Last Name</label>
+						<Input type="text" placeholder="Doe" className="bg-zinc-950 border-zinc-800" />
+					</div>
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">Email</label>
+					<Input type="email" placeholder="you@university.edu" className="bg-zinc-950 border-zinc-800" />
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">School</label>
+					<Input type="text" placeholder="e.g. University of Florida" className="bg-zinc-950 border-zinc-800" />
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">Greek Affiliation & Chapter</label>
+					<Input type="text" placeholder="e.g. Alpha Phi, Beta Chapter" className="bg-zinc-950 border-zinc-800" />
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">Password</label>
+					<Input type="password" placeholder="••••••••" className="bg-zinc-950 border-zinc-800" />
+				</div>
+				
+				<div class="pt-4">
+					<Button type="button" className="w-full">Create Account</Button>
+				</div>
+			</form>
+
+			<div class="mt-6 text-center text-sm text-zinc-400">
+				Already have an account? <a href="/login" class="text-white font-medium hover:underline">Log in</a>
+			</div>
+		</div>
+	</div>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Button } from '@/components/ui/button';
+---
+
+<Layout title="Home">
+	<div class="relative w-full overflow-hidden flex flex-col items-center justify-center min-h-[80vh] px-4 text-center">
+		<!-- Hero Section -->
+		<div class="absolute inset-0 z-0 bg-gradient-to-b from-zinc-900/20 to-zinc-950">
+			<!-- Placeholder for dynamic hero video/photo -->
+			<div class="w-full h-full bg-zinc-900/50 backdrop-blur-3xl absolute inset-0"></div>
+		</div>
+
+		<div class="relative z-10 max-w-4xl mx-auto space-y-8">
+			<h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-sm">
+				Greek Nation
+			</h1>
+			<p class="text-2xl md:text-3xl font-light text-zinc-300">
+				The Artist Connection
+			</p>
+			
+			<p class="text-lg md:text-xl text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+				Greek Nation connects Greek organizations directly with artists — no agency in the middle. Browse talent, see who we've worked with, and book your next event the easy way.
+			</p>
+			
+			<div class="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+				<a href="/artists" class="inline-flex h-12 items-center justify-center rounded-md bg-white px-8 text-sm font-medium text-zinc-950 shadow transition-colors hover:bg-zinc-200">
+					Browse Artists
+				</a>
+				<a href="/login" class="inline-flex h-12 items-center justify-center rounded-md border border-zinc-800 bg-transparent px-8 text-sm font-medium text-white shadow-sm transition-colors hover:bg-zinc-800 hover:text-white">
+					Submit an Offer
+				</a>
+			</div>
+		</div>
+	</div>
+
+	<!-- Gallery Teaser -->
+	<section class="py-24 bg-zinc-950">
+		<div class="container mx-auto px-4 text-center">
+			<h2 class="text-3xl font-bold mb-4">Past Events</h2>
+			<p class="text-zinc-400 mb-12 max-w-2xl mx-auto">Take a look at the moments we've helped create — photos, clips, and reels from events across the country.</p>
+			
+			<div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto mb-12">
+				{/* Placeholders for Gallery Preview */}
+				{[1, 2, 3, 4].map(() => (
+					<div class="aspect-square bg-zinc-900 rounded-lg overflow-hidden relative group cursor-pointer">
+						<div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+							<span class="text-white font-medium text-sm">View</span>
+						</div>
+					</div>
+				))}
+			</div>
+			
+			<a href="/gallery" class="text-zinc-300 hover:text-white font-medium underline underline-offset-4">
+				See Full Gallery
+			</a>
+		</div>
+	</section>
+</Layout>

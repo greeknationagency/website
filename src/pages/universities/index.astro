@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Universities">
+	<div class="container mx-auto px-4 py-16 max-w-6xl">
+		<div class="mb-16 text-center">
+			<h1 class="text-4xl md:text-5xl font-bold mb-4">Our Partners</h1>
+			<p class="text-zinc-400 text-lg max-w-2xl mx-auto">
+				From coast to coast, we've partnered with fraternities and sororities at some of the country's top universities. Here's a look at who we've worked with.
+			</p>
+		</div>
+
+		<!-- Grid of Universities -->
+		<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8">
+			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
+				<div class="flex flex-col items-center justify-center p-6 bg-zinc-900 rounded-xl border border-zinc-800 hover:border-zinc-700 transition-colors">
+					<div class="w-16 h-16 bg-zinc-800 rounded-full mb-4 flex items-center justify-center text-zinc-500">
+						<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-graduation-cap"><path d="M21.42 10.922a2 2 0 0 1-.019 3.022L12 21 2.599 13.944a2 2 0 0 1-.019-3.022l9.4-7.483a2 2 0 0 1 2.42-.01l9.02 7.493Z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/></svg>
+					</div>
+					<h3 class="text-center font-semibold text-white">University {i}</h3>
+				</div>
+			))}
+		</div>
+	</div>
+</Layout>

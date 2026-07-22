@@ -1,0 +1,60 @@
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Greek Nation - The Artist Connection" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title} | Greek Nation</title>
+	</head>
+	<body class="min-h-screen flex flex-col bg-zinc-950 text-zinc-50">
+		<header class="sticky top-0 z-50 w-full border-b border-zinc-800 bg-zinc-950/80 backdrop-blur supports-[backdrop-filter]:bg-zinc-950/60">
+			<div class="container mx-auto px-4 h-16 flex items-center justify-between">
+				<a href="/" class="flex items-center space-x-2">
+					<span class="font-bold text-xl tracking-tight text-white">Greek Nation</span>
+				</a>
+				<nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+					<a href="/artists" class="transition-colors hover:text-white/80 text-zinc-400">Artists</a>
+					<a href="/gallery" class="transition-colors hover:text-white/80 text-zinc-400">Gallery</a>
+					<a href="/universities" class="transition-colors hover:text-white/80 text-zinc-400">Universities</a>
+					<a href="/about" class="transition-colors hover:text-white/80 text-zinc-400">About</a>
+					<a href="/contact" class="transition-colors hover:text-white/80 text-zinc-400">Contact</a>
+				</nav>
+				<div class="flex items-center space-x-4">
+					<a href="/login" class="text-sm font-medium text-zinc-400 hover:text-white hidden md:block">Log In</a>
+					<a href="/signup" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-white text-zinc-950 shadow hover:bg-zinc-200 h-9 px-4 py-2">
+						Sign Up
+					</a>
+				</div>
+			</div>
+		</header>
+
+		<main class="flex-1">
+			<slot />
+		</main>
+
+		<footer class="border-t border-zinc-800 py-6 md:py-0 bg-zinc-950">
+			<div class="container mx-auto px-4 flex flex-col items-center justify-between gap-4 md:h-24 md:flex-row">
+				<p class="text-sm text-zinc-400 leading-loose text-center md:text-left">
+					© {new Date().getFullYear()} Greek Nation. The Artist Connection.
+				</p>
+				<div class="flex items-center space-x-4 text-sm font-medium text-zinc-400">
+					<a href="#" class="hover:text-white">Instagram</a>
+					<a href="#" class="hover:text-white">TikTok</a>
+					<a href="/contact" class="hover:text-white">Contact Us</a>
+				</div>
+			</div>
+		</footer>
+	</body>
+</html>

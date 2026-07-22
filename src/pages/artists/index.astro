@@ -1,0 +1,54 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Input } from '@/components/ui/input';
+---
+
+<Layout title="Artists">
+	<div class="container mx-auto px-4 py-16 max-w-6xl">
+		<div class="mb-12">
+			<h1 class="text-4xl md:text-5xl font-bold mb-4">Our Artists</h1>
+			<p class="text-zinc-400 text-lg max-w-2xl">
+				We provide direct contact to artists and artist management. We like to put the power of a performance in the hands of the creators and the artists.
+			</p>
+		</div>
+
+		<!-- Search and Filters -->
+		<div class="flex flex-col md:flex-row gap-4 mb-12">
+			<div class="w-full md:max-w-md">
+				<Input type="search" placeholder="Search artists..." className="bg-zinc-900 border-zinc-800" />
+			</div>
+			<div class="flex gap-2 overflow-x-auto pb-2">
+				{['All', 'EDM', 'Hip Hop', 'Comedy', 'Country'].map(category => (
+					<button class="px-4 py-2 rounded-full border border-zinc-800 bg-zinc-900 text-sm font-medium hover:bg-zinc-800 whitespace-nowrap">
+						{category}
+					</button>
+				))}
+			</div>
+		</div>
+
+		<!-- Grid of Artists -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+			{[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
+				<div class="group relative rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800 transition-all hover:border-zinc-700">
+					<!-- Photo -->
+					<div class="aspect-square bg-zinc-800 relative">
+						<div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-transparent opacity-60 group-hover:opacity-80 transition-opacity"></div>
+					</div>
+					<!-- Details -->
+					<div class="absolute bottom-0 left-0 p-4 w-full">
+						<h3 class="font-bold text-lg text-white">Artist Name {i}</h3>
+						<p class="text-xs text-zinc-400 uppercase tracking-wider font-semibold">Hip Hop</p>
+					</div>
+					<!-- Hover Action (desktop) -->
+					<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none md:pointer-events-auto">
+						<a href={`/dashboard/offer?artist=ArtistName${i}`} class="bg-white text-zinc-950 px-6 py-2 rounded-md font-medium text-sm shadow-xl hover:bg-zinc-200 transform translate-y-4 group-hover:translate-y-0 transition-all pointer-events-auto">
+							Submit an Offer
+						</a>
+					</div>
+					<!-- Tap Action (mobile) -->
+					<a href={`/dashboard/offer?artist=ArtistName${i}`} class="absolute inset-0 z-10 md:hidden"></a>
+				</div>
+			))}
+		</div>
+	</div>
+</Layout>

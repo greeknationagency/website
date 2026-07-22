@@ -1,0 +1,67 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+---
+
+<Layout title="Member Profile">
+	<div class="container mx-auto px-4 py-12 max-w-4xl">
+		<div class="flex items-center justify-between mb-8">
+			<div>
+				<h1 class="text-3xl font-bold">Your Profile</h1>
+				<p class="text-zinc-400">Show who you are and where you're from.</p>
+			</div>
+			<div class="hidden md:block">
+				<span class="inline-flex items-center rounded-full bg-amber-500/10 px-3 py-1 text-sm font-medium text-amber-500 ring-1 ring-inset ring-amber-500/20">
+					Ambassador Badge (Pending)
+				</span>
+			</div>
+		</div>
+
+		<div class="grid md:grid-cols-3 gap-8">
+			<!-- Profile Photo Column -->
+			<div class="md:col-span-1 space-y-4">
+				<div class="aspect-square bg-zinc-900 border border-zinc-800 rounded-xl flex items-center justify-center relative overflow-hidden group">
+					<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="text-zinc-600"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+					<div class="absolute inset-0 bg-zinc-950/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity cursor-pointer">
+						<span class="text-sm font-medium text-white">Change Photo</span>
+					</div>
+				</div>
+			</div>
+
+			<!-- Profile Fields Column -->
+			<div class="md:col-span-2 space-y-6 bg-zinc-900/50 p-6 rounded-xl border border-zinc-800/50">
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">Full Name</label>
+					<Input type="text" defaultValue="John Doe" className="bg-zinc-950 border-zinc-800" />
+				</div>
+				
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">School</label>
+					<Input type="text" defaultValue="University of Florida" className="bg-zinc-950 border-zinc-800" />
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">Greek Affiliation</label>
+					<Input type="text" defaultValue="Alpha Phi, Beta Chapter" className="bg-zinc-950 border-zinc-800" />
+				</div>
+
+				<div>
+					<label class="block text-sm font-medium text-zinc-300 mb-1">Exec Board Role (Optional)</label>
+					<select class="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2 text-sm shadow-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-white">
+						<option value="">None / Member</option>
+						<option value="president">President</option>
+						<option value="vp">Vice President</option>
+						<option value="treasurer">Treasurer</option>
+						<option value="social" selected>Social Chair</option>
+						<option value="asst_social">Assistant Social Chair</option>
+					</select>
+				</div>
+
+				<div class="pt-4 flex justify-end">
+					<Button type="button">Save Profile</Button>
+				</div>
+			</div>
+		</div>
+	</div>
+</Layout>
