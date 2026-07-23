@@ -9,6 +9,7 @@ export const users = pgTable('users', {
   affiliation: varchar('affiliation', { length: 255 }), // fraternity/sorority + chapter
   role: varchar('role', { length: 100 }), // President, Vice President, etc.
   isAmbassador: boolean('is_ambassador').default(false),
+  isAdmin: boolean('is_admin').default(false),
   profileImageUrl: text('profile_image_url'),
   createdAt: timestamp('created_at').defaultNow(),
 });
@@ -42,5 +43,16 @@ export const media = pgTable('media', {
   title: varchar('title', { length: 255 }),
   artistId: integer('artist_id').references(() => artists.id),
   school: varchar('school', { length: 255 }),
+  createdAt: timestamp('created_at').defaultNow(),
+});
+
+export const events = pgTable('events', {
+  id: serial('id').primaryKey(),
+  title: varchar('title', { length: 255 }).notNull(),
+  description: text('description'),
+  eventDate: timestamp('event_date').notNull(),
+  location: varchar('location', { length: 255 }),
+  imageUrl: text('image_url'),
+  ticketLink: text('ticket_link'),
   createdAt: timestamp('created_at').defaultNow(),
 });

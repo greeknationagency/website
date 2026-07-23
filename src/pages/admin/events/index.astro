@@ -1,0 +1,57 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+import { db } from '../../../db';
+import { events } from '../../../db/schema';
+import { desc } from 'drizzle-orm';
+import { Button } from '@/components/ui/button';
+
+const allEvents = await db.select().from(events).orderBy(desc(events.eventDate));
+---
+
+<Layout title="Admin - Manage Events">
+	<div class="container mx-auto px-4 py-12 min-h-[80vh]">
+		<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+			<div>
+				<h1 class="text-3xl font-bold text-white mb-2">Manage Events</h1>
+				<p class="text-zinc-400 text-sm">Create and organize Greek Nation events.</p>
+			</div>
+			<a href="/admin/events/new">
+				<Button>+ Create New Event</Button>
+			</a>
+		</div>
+
+		<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-6">
+			{allEvents.length === 0 ? (
+				<div class="text-center py-12">
+					<p class="text-zinc-400 mb-4">No events found.</p>
+					<a href="/admin/events/new">
+						<Button variant="outline">Create your first event</Button>
+					</a>
+				</div>
+			) : (
+				<div class="overflow-x-auto">
+					<table class="w-full text-left text-sm">
+						<thead>
+							<tr class="border-b border-zinc-800 text-zinc-400">
+								<th class="pb-3 font-medium">Event Title</th>
+								<th class="pb-3 font-medium">Date</th>
+								<th class="pb-3 font-medium">Location</th>
+								<th class="pb-3 font-medium">Created</th>
+							</tr>
+						</thead>
+						<tbody class="divide-y divide-zinc-800">
+							{allEvents.map((event) => (
+								<tr class="hover:bg-zinc-800/50 transition-colors">
+									<td class="py-4 font-medium text-white">{event.title}</td>
+									<td class="py-4 text-zinc-300">{new Date(event.eventDate).toLocaleDateString()}</td>
+									<td class="py-4 text-zinc-400">{event.location || '-'}</td>
+									<td class="py-4 text-zinc-500">{event.createdAt ? new Date(event.createdAt).toLocaleDateString() : '-'}</td>
+								</tr>
+							))}
+						</tbody>
+					</table>
+				</div>
+			)}
+		</div>
+	</div>
+</Layout>

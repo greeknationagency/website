@@ -15,24 +15,61 @@ import { Input } from '@/components/ui/input';
 			<form class="space-y-4">
 				<div>
 					<label class="block text-sm font-medium text-zinc-300 mb-1">Email</label>
-					<Input type="email" placeholder="you@example.com" className="bg-zinc-950 border-zinc-800" />
+					<Input type="email" name="email" placeholder="you@example.com" className="bg-zinc-950 border-zinc-800" />
 				</div>
 				<div>
 					<div class="flex items-center justify-between mb-1">
 						<label class="block text-sm font-medium text-zinc-300">Password</label>
 						<a href="#" class="text-xs text-zinc-500 hover:text-white transition-colors">Forgot password?</a>
 					</div>
-					<Input type="password" placeholder="••••••••" className="bg-zinc-950 border-zinc-800" />
+					<Input type="password" name="password" placeholder="••••••••" className="bg-zinc-950 border-zinc-800" />
 				</div>
 				
 				<div class="pt-2">
-					<Button type="button" className="w-full">Log In</Button>
+					<Button type="submit" className="w-full">Log In</Button>
 				</div>
 			</form>
+			<p id="error-message" class="text-red-500 text-sm mt-4 text-center hidden"></p>
 
 			<div class="mt-6 text-center text-sm text-zinc-400">
 				Don't have an account? <a href="/signup" class="text-white font-medium hover:underline">Sign up</a>
 			</div>
 		</div>
 	</div>
+
+	<script>
+		const form = document.querySelector('form');
+		const errorMessage = document.getElementById('error-message');
+
+		form?.addEventListener('submit', async (e) => {
+			e.preventDefault();
+			errorMessage?.classList.add('hidden');
+
+			const formData = new FormData(form);
+			
+			try {
+				const res = await fetch('/api/auth/login', {
+					method: 'POST',
+					body: formData
+				});
+				
+				const data = await res.json();
+				
+				if (res.ok) {
+					window.location.href = '/dashboard/profile';
+				} else {
+					if (errorMessage) {
+						errorMessage.textContent = data.error || 'An error occurred';
+						errorMessage.classList.remove('hidden');
+					}
+				}
+			} catch (err) {
+				console.error(err);
+				if (errorMessage) {
+					errorMessage.textContent = 'An unexpected error occurred';
+					errorMessage.classList.remove('hidden');
+				}
+			}
+		});
+	</script>
 </Layout>

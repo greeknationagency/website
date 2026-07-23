@@ -32,10 +32,26 @@ const { title } = Astro.props;
 					<a href="/contact" class="transition-colors hover:text-white/80 text-zinc-400">Contact</a>
 				</nav>
 				<div class="flex items-center space-x-4">
-					<a href="/login" class="text-sm font-medium text-zinc-400 hover:text-white hidden md:block">Log In</a>
-					<a href="/signup" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-white text-zinc-950 shadow hover:bg-zinc-200 h-9 px-4 py-2">
-						Sign Up
-					</a>
+					{Astro.locals.user ? (
+						<>
+							{Astro.locals.user.isAdmin && (
+								<a href="/admin/events" class="text-sm font-medium text-amber-500 hover:text-amber-400 hidden md:block">Admin Panel</a>
+							)}
+							<a href="/dashboard/profile" class="text-sm font-medium text-zinc-400 hover:text-white hidden md:block">Dashboard</a>
+							<form action="/api/auth/logout" method="POST" class="inline">
+								<button type="submit" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-zinc-800 text-white shadow hover:bg-zinc-700 h-9 px-4 py-2">
+									Log Out
+								</button>
+							</form>
+						</>
+					) : (
+						<>
+							<a href="/login" class="text-sm font-medium text-zinc-400 hover:text-white hidden md:block">Log In</a>
+							<a href="/signup" class="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring bg-white text-zinc-950 shadow hover:bg-zinc-200 h-9 px-4 py-2">
+								Sign Up
+							</a>
+						</>
+					)}
 				</div>
 			</div>
 		</header>
