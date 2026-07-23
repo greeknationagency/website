@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 		</div>
 
 		<div class="bg-zinc-900 border border-zinc-800 rounded-xl p-8">
-			<form class="space-y-6">
+			<form id="event-form" class="space-y-6">
 				<div class="space-y-2">
 					<label class="block text-sm font-medium text-zinc-300">Event Title <span class="text-red-500">*</span></label>
 					<Input type="text" name="title" required placeholder="Greek Week 2027 Concert" className="bg-zinc-950 border-zinc-800" />
@@ -40,10 +40,9 @@ import { Textarea } from '@/components/ui/textarea';
 					<Input type="url" name="ticketLink" placeholder="https://..." className="bg-zinc-950 border-zinc-800" />
 				</div>
 
-				<!-- Will add Blob upload here later -->
 				<div class="space-y-2">
-					<label class="block text-sm font-medium text-zinc-300">Image URL (Optional)</label>
-					<Input type="url" name="imageUrl" placeholder="https://..." className="bg-zinc-950 border-zinc-800" />
+					<label class="block text-sm font-medium text-zinc-300">Event Image (Optional)</label>
+					<Input type="file" name="imageFile" accept="image/*" className="bg-zinc-950 border-zinc-800 text-zinc-400 file:bg-zinc-800 file:text-white file:border-0 file:rounded-md file:px-4 file:py-1 hover:file:bg-zinc-700 transition-colors" />
 				</div>
 
 				<div class="pt-4 flex items-center justify-end space-x-4 border-t border-zinc-800 mt-8 pt-8">
@@ -56,16 +55,45 @@ import { Textarea } from '@/components/ui/textarea';
 	</div>
 
 	<script>
-		const form = document.querySelector('form');
+		const form = document.getElementById('event-form') as HTMLFormElement;
 		const errorMessage = document.getElementById('error-message');
 
 		form?.addEventListener('submit', async (e) => {
 			e.preventDefault();
 			errorMessage?.classList.add('hidden');
+			const submitButton = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+			if (submitButton) submitButton.disabled = true;
 
 			const formData = new FormData(form);
-			
+			const imageFile = formData.get('imageFile');
+			let imageUrl = '';
+
 			try {
+				// 1. Upload image to Vercel Blob if provided
+				if (imageFile && (imageFile as File).size > 0) {
+					const uploadData = new FormData();
+					uploadData.append('file', imageFile);
+					
+					const uploadRes = await fetch('/api/upload', {
+						method: 'POST',
+						body: uploadData
+					});
+					
+					if (!uploadRes.ok) {
+						const errData = await uploadRes.json();
+						throw new Error(errData.error || 'Failed to upload image');
+					}
+					
+					const { url } = await uploadRes.json();
+					imageUrl = url;
+				}
+
+				// 2. Submit event data
+				formData.delete('imageFile');
+				if (imageUrl) {
+					formData.append('imageUrl', imageUrl);
+				}
+
 				const res = await fetch('/api/admin/events', {
 					method: 'POST',
 					body: formData
@@ -76,17 +104,15 @@ import { Textarea } from '@/components/ui/textarea';
 				if (res.ok) {
 					window.location.href = '/admin/events';
 				} else {
-					if (errorMessage) {
-						errorMessage.textContent = data.error || 'An error occurred';
-						errorMessage.classList.remove('hidden');
-					}
+					throw new Error(data.error || 'An error occurred while saving the event');
 				}
-			} catch (err) {
+			} catch (err: any) {
 				console.error(err);
 				if (errorMessage) {
-					errorMessage.textContent = 'An unexpected error occurred';
+					errorMessage.textContent = err.message || 'An unexpected error occurred';
 					errorMessage.classList.remove('hidden');
 				}
+				if (submitButton) submitButton.disabled = false;
 			}
 		});
 	</script>
