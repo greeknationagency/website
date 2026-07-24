@@ -1,35 +1,196 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { db } from '../../db';
+import { media } from '../../db/schema';
+import { desc } from 'drizzle-orm';
+
+const allMedia = await db.select().from(media).orderBy(desc(media.createdAt));
 ---
 
 <Layout title="Gallery">
 	<div class="container mx-auto px-4 py-16 max-w-6xl">
 		<div class="mb-12 text-center md:text-left">
-			<h1 class="text-4xl md:text-5xl font-bold mb-4">Gallery</h1>
+			<h1 class="text-4xl md:text-5xl font-bold mb-4 text-white">Gallery</h1>
 			<p class="text-zinc-400 text-lg max-w-2xl">
 				Take a look at the moments we've helped create — photos, clips, and reels from events across the country.
 			</p>
 		</div>
 
 		<!-- Mixed Media Grid -->
-		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[250px]">
-			{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((i) => (
-				<div class={`bg-zinc-900 rounded-lg overflow-hidden relative group cursor-pointer ${i % 4 === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}>
-					{/* Placeholder Media */}
-					<div class="absolute inset-0 bg-zinc-800 flex flex-col items-center justify-center text-zinc-600">
-						{i % 3 === 0 ? (
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-video mb-2"><path d="m16 13 5.223 3.482a.5.5 0 0 0 .777-.416V7.87a.5.5 0 0 0-.752-.432L16 10.5"/><rect x="2" y="6" width="14" height="12" rx="2"/></svg>
+		<div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 auto-rows-[250px]" id="gallery-grid">
+			{allMedia.map((item, i) => (
+				<div 
+					class={`gallery-item bg-zinc-900 rounded-lg overflow-hidden relative group cursor-pointer ${i % 4 === 0 ? 'md:col-span-2 md:row-span-2' : ''}`}
+					data-url={item.url}
+					data-type={item.type}
+					data-title={item.title}
+				>
+					<div class="absolute inset-0 bg-zinc-950">
+						{item.type === 'video' ? (
+							<video src={item.url} class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" preload="metadata" muted loop onmouseover="this.play()" onmouseout="this.pause()" />
 						) : (
-							<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-image mb-2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+							<img src={item.url} alt={item.title || 'Greek Nation Event'} class="w-full h-full object-cover opacity-90 group-hover:opacity-100 transition-opacity" loading="lazy" decoding="async" fetchpriority={i < 4 ? "high" : "auto"} />
+						)}
+						{item.type === 'video' && (
+							<div class="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:opacity-0 transition-opacity duration-300">
+								<div class="bg-black/50 backdrop-blur-sm rounded-full p-3">
+									<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play text-white fill-white"><polygon points="6 3 20 12 6 21 6 3"/></svg>
+								</div>
+							</div>
 						)}
 					</div>
 
-					<div class="absolute inset-0 bg-gradient-to-t from-zinc-950/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity p-4 flex flex-col justify-end">
-						<h3 class="text-white font-medium">Event {i}</h3>
-						<p class="text-zinc-300 text-sm">University {i}</p>
+					<div class="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-6 flex flex-col justify-end">
+						<h3 class="text-white font-semibold text-lg">{item.title}</h3>
+						{item.school && <p class="text-amber-500 font-medium text-sm mt-1">{item.school}</p>}
 					</div>
 				</div>
 			))}
+			
+			{allMedia.length === 0 && (
+				<div class="col-span-full py-24 text-center">
+					<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-zinc-900 mb-4">
+						<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-camera text-zinc-500"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+					</div>
+					<h3 class="text-xl font-medium text-white mb-2">Check back soon</h3>
+					<p class="text-zinc-500">We're curating the best moments from our recent events.</p>
+				</div>
+			)}
 		</div>
 	</div>
+
+	<!-- Lightbox Modal -->
+	<div id="lightbox" class="fixed inset-0 z-50 bg-black/95 hidden flex-col items-center justify-center opacity-0 transition-opacity duration-300 backdrop-blur-sm">
+		<button id="lightbox-close" class="absolute top-6 right-6 text-white hover:text-amber-500 transition-colors z-50 bg-black/50 p-2 rounded-full backdrop-blur-md">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+		</button>
+		
+		<button id="lightbox-prev" class="absolute left-6 top-1/2 -translate-y-1/2 text-white hover:text-amber-500 transition-colors z-50 bg-black/50 p-3 rounded-full backdrop-blur-md hidden md:block">
+			<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-left"><path d="m15 18-6-6 6-6"/></svg>
+		</button>
+		
+		<button id="lightbox-next" class="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-amber-500 transition-colors z-50 bg-black/50 p-3 rounded-full backdrop-blur-md hidden md:block">
+			<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-right"><path d="m9 18 6-6-6-6"/></svg>
+		</button>
+		
+		<div class="relative w-full h-full max-w-6xl max-h-[85vh] flex items-center justify-center p-4">
+			<div id="lightbox-content" class="w-full h-full flex items-center justify-center">
+				<!-- Content injected by JS -->
+			</div>
+			
+			<div class="absolute bottom-6 left-0 right-0 text-center z-50 pointer-events-none hidden justify-center">
+				<h3 id="lightbox-title" class="text-white text-xl font-bold bg-black/50 inline-block px-6 py-2 rounded-full backdrop-blur-md"></h3>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		const galleryItems = Array.from(document.querySelectorAll('.gallery-item'));
+		const lightbox = document.getElementById('lightbox');
+		const lightboxContent = document.getElementById('lightbox-content');
+		const lightboxTitle = document.getElementById('lightbox-title');
+		const lightboxClose = document.getElementById('lightbox-close');
+		const lightboxPrev = document.getElementById('lightbox-prev');
+		const lightboxNext = document.getElementById('lightbox-next');
+		
+		let currentIndex = -1;
+
+		function openLightbox(index: number) {
+			if (!lightbox || !lightboxContent || !lightboxTitle || index < 0 || index >= galleryItems.length) return;
+
+			currentIndex = index;
+			const item = galleryItems[currentIndex];
+			const url = item.getAttribute('data-url');
+			const type = item.getAttribute('data-type');
+			const title = item.getAttribute('data-title');
+
+			if (!url || !type) return;
+
+			lightboxTitle.textContent = title || 'Gallery Media';
+			lightboxContent.innerHTML = ''; // Clear previous content
+
+			if (type === 'video') {
+				const video = document.createElement('video');
+				video.src = url;
+				video.controls = true;
+				video.autoplay = true;
+				video.className = 'max-w-full max-h-full rounded-lg shadow-2xl';
+				lightboxContent.appendChild(video);
+			} else {
+				const img = document.createElement('img');
+				img.src = url;
+				img.className = 'max-w-full max-h-full rounded-lg shadow-2xl object-contain transition-opacity duration-300 opacity-0';
+				img.onload = () => img.classList.remove('opacity-0');
+				lightboxContent.appendChild(img);
+			}
+
+			// Show lightbox
+			if (lightbox.classList.contains('hidden')) {
+				lightbox.classList.remove('hidden');
+				lightbox.classList.add('flex');
+				requestAnimationFrame(() => {
+					lightbox.classList.remove('opacity-0');
+				});
+				document.body.style.overflow = 'hidden'; // Prevent background scrolling
+			}
+		}
+
+		function closeLightbox() {
+			if (!lightbox || !lightboxContent) return;
+			
+			lightbox.classList.add('opacity-0');
+			setTimeout(() => {
+				lightbox.classList.add('hidden');
+				lightbox.classList.remove('flex');
+				lightboxContent.innerHTML = ''; // Stop video playback
+				document.body.style.overflow = ''; // Restore scrolling
+				currentIndex = -1;
+			}, 300);
+		}
+
+		function showNext() {
+			if (currentIndex < galleryItems.length - 1) {
+				openLightbox(currentIndex + 1);
+			} else {
+				openLightbox(0); // loop back
+			}
+		}
+
+		function showPrev() {
+			if (currentIndex > 0) {
+				openLightbox(currentIndex - 1);
+			} else {
+				openLightbox(galleryItems.length - 1); // loop to end
+			}
+		}
+
+		// Event Listeners
+		galleryItems.forEach((item, index) => {
+			item.addEventListener('click', () => openLightbox(index));
+		});
+
+		lightboxClose?.addEventListener('click', closeLightbox);
+		lightboxNext?.addEventListener('click', (e) => { e.stopPropagation(); showNext(); });
+		lightboxPrev?.addEventListener('click', (e) => { e.stopPropagation(); showPrev(); });
+		
+		// Close on background click
+		lightbox?.addEventListener('click', (e) => {
+			if (e.target === lightbox || e.target === lightboxContent) {
+				closeLightbox();
+			}
+		});
+
+		// Keyboard Navigation
+		document.addEventListener('keydown', (e) => {
+			if (lightbox?.classList.contains('hidden')) return;
+			
+			if (e.key === 'Escape') {
+				closeLightbox();
+			} else if (e.key === 'ArrowRight') {
+				showNext();
+			} else if (e.key === 'ArrowLeft') {
+				showPrev();
+			}
+		});
+	</script>
 </Layout>
